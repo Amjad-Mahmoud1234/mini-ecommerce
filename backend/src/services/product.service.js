@@ -1,13 +1,20 @@
-import { readFileSync } from "node:fs";
+import prisma from "../config/db.js";
 
-const productsUrl = new URL("../data/products.json", import.meta.url);
-const data = readFileSync(productsUrl, "utf-8");
-const products = JSON.parse(data);
-
-export const getAllProducts = () => {
-  return products;
+export const getAllProducts = async () => {
+  return prisma.product.findMany({
+    include: {
+      variants: true,
+    },
+  });
 };
 
 export const getProductById = (id) => {
-  return products.find((product) => product.id === Number(id)) ?? null;
+  return prisma.product.findUnique({
+    where: {
+      id: Number(id),
+    },
+    include: {
+      variants: true,
+    },
+  });
 };
