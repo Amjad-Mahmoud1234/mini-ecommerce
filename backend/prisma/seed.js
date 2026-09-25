@@ -2,8 +2,14 @@ import { readFileSync } from "node:fs";
 import bcrypt from "bcrypt";
 import prisma from "../src/config/db.js";
 
-const productsUrl = new URL("../src/data/products.json", import.meta.url);
-const products = JSON.parse(readFileSync(productsUrl, "utf-8"));
+const productsUrl = new URL(
+  "../src/data/products.json",
+  import.meta.url
+);
+
+const products = JSON.parse(
+  readFileSync(productsUrl, "utf-8")
+);
 
 async function main() {
   // Seed test user
@@ -14,7 +20,10 @@ async function main() {
   });
 
   if (!existingUser) {
-    const passwordHash = await bcrypt.hash("Password123!", 12);
+    const passwordHash = await bcrypt.hash(
+      "Password123!",
+      12
+    );
 
     await prisma.user.create({
       data: {
@@ -26,31 +35,39 @@ async function main() {
 
   // Seed products
   for (const product of products) {
-    const existing = await prisma.product.findFirst({
-      where: { title: product.title },
-    });
-
-    if (existing) {
-      continue;
+    if (
+      !Array.isArray(product.variants) ||
+      product.variants.length === 0
+    ) {
+      throw new Error(
+        `Product "${product.title}" must have at least one variant`
+      );
     }
 
-    const hasVariants = product.variants.length > 0;
+    const existingProduct =
+      await prisma.product.findFirst({
+        where: {
+          title: product.title,
+        },
+      });
+
+    if (existingProduct) continue;
 
     await prisma.product.create({
       data: {
         title: product.title,
         description: product.description,
         price: product.price,
-        stock: hasVariants ? null : product.stock,
         imageUrl: product.image,
-        ...(hasVariants && {
-          variants: {
-            create: product.variants.map((variant) => ({
+
+        variants: {
+          create: product.variants.map(
+            (variant) => ({
               name: variant.name,
               stock: variant.stock,
-            })),
-          },
-        }),
+            })
+          ),
+        },
       },
     });
   }

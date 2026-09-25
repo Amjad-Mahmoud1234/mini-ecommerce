@@ -43,27 +43,30 @@
     "title": "Wireless Bluetooth Earbuds",
     "description": "True wireless earbuds with noise isolation, a charging case, and 24-hour battery life.",
     "price": 79.99,
-    "stock": 60,
     "image": "https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=800",
-    "variants": []
+    "variants": [
+      { "name": "Black", "stock": 60 }
+    ]
   },
   {
     "id": 5,
     "title": "Insulated Stainless Water Bottle",
     "description": "Double-wall stainless steel bottle that keeps drinks cold for 24 hours or hot for 12.",
     "price": 28.0,
-    "stock": 40,
     "image": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800",
-    "variants": []
+    "variants": [
+      { "name": "750ml", "stock": 40 }
+    ]
   },
   {
     "id": 6,
     "title": "Leather Bifold Wallet",
     "description": "Full-grain leather bifold with card slots, a cash pocket, and RFID lining.",
     "price": 34.95,
-    "stock": 18,
     "image": "https://images.unsplash.com/photo-1627123424574-724758594e93?w=800",
-    "variants": []
+    "variants": [
+      { "name": "Brown", "stock": 18 }
+    ]
   },
   {
     "id": 7,
@@ -82,71 +85,79 @@
     "title": "Adjustable LED Desk Lamp",
     "description": "Dimmable LED lamp with three color temperatures and a USB charging port.",
     "price": 32.5,
-    "stock": 22,
     "image": "https://images.unsplash.com/photo-1507473889767-e2d5bea2e0e0?w=800",
-    "variants": []
+    "variants": [
+      { "name": "White", "stock": 22 }
+    ]
   },
   {
     "id": 9,
     "title": "Ceramic Pour-Over Coffee Mug",
     "description": "12 oz stoneware mug with a comfortable handle and a glazed interior.",
     "price": 14.0,
-    "stock": 70,
     "image": "https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?w=800",
-    "variants": []
+    "variants": [
+      { "name": "12 oz", "stock": 70 }
+    ]
   },
   {
     "id": 10,
     "title": "Non-Slip Yoga Mat",
     "description": "6 mm TPE yoga mat with extra grip, closed-cell construction, and a carry strap.",
     "price": 29.99,
-    "stock": 15,
     "image": "https://images.unsplash.com/photo-1601925260368-ae2f83cf8b7f?w=800",
-    "variants": []
+    "variants": [
+      { "name": "6 mm", "stock": 15 }
+    ]
   },
   {
     "id": 11,
     "title": "Everyday Laptop Backpack",
     "description": "Water-resistant 20 L backpack with a padded 15-inch laptop sleeve and organizer pockets.",
     "price": 54.0,
-    "stock": 27,
     "image": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800",
-    "variants": []
+    "variants": [
+      { "name": "20 L", "stock": 27 }
+    ]
   },
   {
     "id": 12,
     "title": "Compact Mechanical Keyboard",
     "description": "75% mechanical keyboard with hot-swappable switches, RGB lighting, and USB-C.",
     "price": 119.0,
-    "stock": 12,
     "image": "https://images.unsplash.com/photo-1511467687858-23d96c32e4ae?w=800",
-    "variants": []
+    "variants": [
+      { "name": "75%", "stock": 12 }
+    ]
   },
   {
     "id": 13,
     "title": "Polarized Aviator Sunglasses",
     "description": "Metal-frame aviators with polarized lenses and UV400 protection.",
     "price": 42.0,
-    "stock": 20,
     "image": "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800",
-    "variants": []
+    "variants": [
+      { "name": "Gold", "stock": 20 }
+    ]
   },
   {
     "id": 14,
     "title": "Ergonomic Wireless Mouse",
     "description": "Silent-click wireless mouse with an adjustable DPI sensor and a rechargeable battery.",
     "price": 24.99,
-    "stock": 55,
     "image": "https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=800",
-    "variants": []
+    "variants": [
+      { "name": "Black", "stock": 55 }
+    ]
   },
   {
     "id": 15,
     "title": "Linen Throw Pillow Cover",
     "description": "18-inch linen blend pillow cover with a hidden zipper. Insert sold separately.",
     "price": 16.5,
-    "stock": 0,
     "image": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800",
-    "variants": []
+    "variants": [
+      { "name": "18-inch", "stock": 0 }
+    ]
   }
 ]
