@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import productsRoutes from './routes/product.routes.js';
 import authRoutes from './routes/auth.routes.js';
+import wishlistRoutes from "./routes/wishlist.routes.js";
 import { globalErrorHandler } from './middlewares/error.middleware.js';
 
 const app = express();
@@ -15,6 +16,7 @@ app.get('/health', (req, res) => {
 
 app.use('/api/v1/products', productsRoutes);
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/wishlist", wishlistRoutes);
 
 app.use(globalErrorHandler);
 
