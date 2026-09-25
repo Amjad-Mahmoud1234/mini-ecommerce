@@ -2,8 +2,10 @@ import {
   getAllProducts,
   getProductById as findProductById,
 } from "../services/product.service.js";
+import catchAsync from "../utils/catchAsync.js";
+import AppError from "../utils/appError.js";
 
-export const getProducts = async (req, res) => {
+export const getProducts = catchAsync(async (req, res) => {
   const products = await getAllProducts();
 
   res.status(200).json({
@@ -11,20 +13,17 @@ export const getProducts = async (req, res) => {
     results: products.length,
     data: products,
   });
-};
+});
 
-export const getProductById = async (req, res) => {
+export const getProductById = catchAsync(async (req, res, next) => {
   const product = await findProductById(req.params.id);
 
   if (!product) {
-    return res.status(404).json({
-      status: "fail",
-      message: "Product not found",
-    });
+    return next(new AppError("Product not found", 404));
   }
 
   res.status(200).json({
     status: "success",
     data: product,
   });
-};
+});
