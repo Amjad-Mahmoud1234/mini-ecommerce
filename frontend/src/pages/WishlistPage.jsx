@@ -1,58 +1,75 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import api from "../services/api";
 import "./WishlistPage.css";
 
 function WishlistPage() {
-  const [wishlistItems, setWishlistItems] = useState([
-    {
-      id: 1,
-      productId: 4,
-      title: "Wireless Bluetooth Earbuds",
-      price: 79.99,
-      imageUrl:
-        "https://images.unsplash.com/photo-1606220945770-b5b6c2c55bf1?auto=format&fit=crop&w=900&q=80",
-      variants: [
-        { id: 13, name: "Black", stock: 15 },
-      ],
-    },
-    {
-      id: 2,
-      productId: 7,
-      title: "Minimal Watch",
-      price: 120,
-      imageUrl:
-        "https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&w=900&q=80",
-      variants: [
-        { id: 21, name: "Black", stock: 6 },
-        { id: 22, name: "Brown", stock: 8 },
-      ],
-    },
-    {
-      id: 3,
-      productId: 9,
-      title: "Classic Sunglasses",
-      price: 39.99,
-      imageUrl:
-        "https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=80",
-      variants: [
-        { id: 26, name: "Black", stock: 12 },
-      ],
-    },
-  ]);
+  const [wishlistItems, setWishlistItems] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [removingProductId, setRemovingProductId] =
+    useState(null);
 
-  const removeFromWishlist = (itemId) => {
-    setWishlistItems((currentItems) =>
-      currentItems.filter((item) => item.id !== itemId)
+  useEffect(() => {
+    const fetchWishlist = async () => {
+      try {
+        const response = await api.get("/wishlist");
+
+        setWishlistItems(response.data.data);
+      } catch (error) {
+        console.error("Failed to fetch wishlist:", error);
+
+        setError(
+          error.response?.data?.message ||
+            "Unable to load wishlist. Please try again."
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWishlist();
+  }, []);
+
+  const removeFromWishlist = async (productId) => {
+    try {
+      setRemovingProductId(productId);
+
+      await api.delete(`/wishlist/items/${productId}`);
+
+      setWishlistItems((currentItems) =>
+        currentItems.filter(
+          (item) => item.id !== productId
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Failed to remove wishlist item:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to remove product from wishlist."
+      );
+    } finally {
+      setRemovingProductId(null);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="wishlist-page">
+        <Navbar />
+
+        <main className="wishlist-container">
+          <p>Loading wishlist...</p>
+        </main>
+      </div>
     );
-  };
-
-  const moveToCart = (itemId) => {
-    // UI mock only.
-    // Later this will call the real cart API.
-    removeFromWishlist(itemId);
-  };
+  }
 
   return (
     <div className="wishlist-page">
@@ -72,7 +89,10 @@ function WishlistPage() {
 
             <p>
               {wishlistItems.length}{" "}
-              {wishlistItems.length === 1 ? "product" : "products"} saved
+              {wishlistItems.length === 1
+                ? "product"
+                : "products"}{" "}
+              saved
             </p>
           </div>
 
@@ -84,6 +104,12 @@ function WishlistPage() {
           </Link>
         </div>
 
+        {error && (
+          <p className="wishlist-error">
+            {error}
+          </p>
+        )}
+
         {wishlistItems.length === 0 ? (
           <section className="empty-wishlist">
             <div className="empty-wishlist-icon">
@@ -93,7 +119,8 @@ function WishlistPage() {
             <h2>Your wishlist is empty.</h2>
 
             <p>
-              Save products you like and find them here later.
+              Save products you like and find them
+              here later.
             </p>
 
             <Link to="/products">
@@ -108,9 +135,7 @@ function WishlistPage() {
                 className="wishlist-card"
               >
                 <div className="wishlist-image-wrapper">
-                  <Link
-                    to={`/products/${item.productId}`}
-                  >
+                  <Link to={`/products/${item.id}`}>
                     <img
                       src={item.imageUrl}
                       alt={item.title}
@@ -122,6 +147,9 @@ function WishlistPage() {
                     type="button"
                     className="wishlist-remove-icon"
                     aria-label={`Remove ${item.title} from wishlist`}
+                    disabled={
+                      removingProductId === item.id
+                    }
                     onClick={() =>
                       removeFromWishlist(item.id)
                     }
@@ -132,7 +160,7 @@ function WishlistPage() {
 
                 <div className="wishlist-card-content">
                   <Link
-                    to={`/products/${item.productId}`}
+                    to={`/products/${item.id}`}
                     className="wishlist-product-title"
                   >
                     {item.title}
@@ -144,27 +172,18 @@ function WishlistPage() {
 
                   {item.variants.length > 1 && (
                     <p className="wishlist-options">
-                      {item.variants.length} options available
+                      {item.variants.length} options
+                      available
                     </p>
                   )}
 
                   <div className="wishlist-actions">
                     <Link
-                      to={`/products/${item.productId}`}
+                      to={`/products/${item.id}`}
                       className="view-product-button"
                     >
                       View product
                     </Link>
-
-                    <button
-                      type="button"
-                      className="move-cart-button"
-                      onClick={() =>
-                        moveToCart(item.id)
-                      }
-                    >
-                      Move to cart →
-                    </button>
                   </div>
                 </div>
               </article>

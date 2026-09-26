@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
 import api from "../services/api";
@@ -6,6 +7,9 @@ import "./ProductsPage.css";
 
 function ProductsPage() {
   const [products, setProducts] = useState([]);
+  const [wishlistProductIds, setWishlistProductIds] =
+    useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -16,15 +20,65 @@ function ProductsPage() {
 
         setProducts(response.data.data);
       } catch (error) {
-        console.error("Failed to fetch products:", error);
-        setError("Unable to load products. Please try again.");
+        console.error(
+          "Failed to fetch products:",
+          error
+        );
+
+        setError(
+          "Unable to load products. Please try again."
+        );
       } finally {
         setLoading(false);
       }
     };
 
+    const fetchWishlist = async () => {
+      const accessToken =
+        localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        return;
+      }
+
+      try {
+        const response = await api.get("/wishlist");
+
+        const productIds = response.data.data.map(
+          (product) => product.id
+        );
+
+        setWishlistProductIds(productIds);
+      } catch (error) {
+        console.error(
+          "Failed to fetch wishlist:",
+          error
+        );
+      }
+    };
+
     fetchProducts();
+    fetchWishlist();
   }, []);
+
+  const handleWishlistChange = (
+    productId,
+    isWishlisted
+  ) => {
+    setWishlistProductIds((currentIds) => {
+      if (isWishlisted) {
+        if (currentIds.includes(productId)) {
+          return currentIds;
+        }
+
+        return [...currentIds, productId];
+      }
+
+      return currentIds.filter(
+        (id) => id !== productId
+      );
+    });
+  };
 
   return (
     <div className="products-page">
@@ -42,19 +96,16 @@ function ProductsPage() {
           </h1>
 
           <p>
-            A small selection of useful pieces for daily life,
+            A small selection of useful pieces for daily
+            life,
             <br />
             chosen with care.
           </p>
         </section>
 
-        {loading && (
-          <p>Loading products...</p>
-        )}
+        {loading && <p>Loading products...</p>}
 
-        {error && (
-          <p>{error}</p>
-        )}
+        {error && <p>{error}</p>}
 
         {!loading && !error && (
           <section className="products-grid">
@@ -62,6 +113,12 @@ function ProductsPage() {
               <ProductCard
                 key={product.id}
                 product={product}
+                initiallyWishlisted={wishlistProductIds.includes(
+                  product.id
+                )}
+                onWishlistChange={
+                  handleWishlistChange
+                }
               />
             ))}
           </section>

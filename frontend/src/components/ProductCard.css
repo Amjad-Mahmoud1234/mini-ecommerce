@@ -104,6 +104,18 @@
   transform: scale(1.06);
 }
 
+.wishlist-button.active {
+  color: #123f34;
+}
+
+.wishlist-button:disabled {
+  cursor: default;
+}
+
+.wishlist-button.active:disabled {
+  opacity: 1;
+}
+
 
 /* =========================
    PRODUCT INFORMATION

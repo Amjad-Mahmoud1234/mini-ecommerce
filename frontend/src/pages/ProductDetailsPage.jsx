@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+} from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import api from "../services/api";
@@ -7,40 +11,86 @@ import "./ProductDetailsPage.css";
 
 function ProductDetailsPage() {
   const { productId } = useParams();
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState(null);
-  const [selectedVariant, setSelectedVariant] = useState(null);
+  const [selectedVariant, setSelectedVariant] =
+    useState(null);
   const [quantity, setQuantity] = useState(1);
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const [isWishlisted, setIsWishlisted] =
+    useState(false);
+
+  const [
+    isUpdatingWishlist,
+    setIsUpdatingWishlist,
+  ] = useState(false);
+
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const response = await api.get(`/products/${productId}`);
+        const response = await api.get(
+          `/products/${productId}`
+        );
 
         const fetchedProduct = response.data.data;
 
         setProduct(fetchedProduct);
 
         if (fetchedProduct.variants.length > 0) {
-          setSelectedVariant(fetchedProduct.variants[0]);
+          setSelectedVariant(
+            fetchedProduct.variants[0]
+          );
         }
       } catch (error) {
-        console.error("Failed to fetch product:", error);
+        console.error(
+          "Failed to fetch product:",
+          error
+        );
 
         if (error.response?.status === 404) {
           setError("Product not found.");
         } else {
-          setError("Unable to load product. Please try again.");
+          setError(
+            "Unable to load product. Please try again."
+          );
         }
       } finally {
         setLoading(false);
       }
     };
 
+    const fetchWishlistStatus = async () => {
+      const accessToken =
+        localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        return;
+      }
+
+      try {
+        const response =
+          await api.get("/wishlist");
+
+        const exists = response.data.data.some(
+          (wishlistProduct) =>
+            wishlistProduct.id === Number(productId)
+        );
+
+        setIsWishlisted(exists);
+      } catch (error) {
+        console.error(
+          "Failed to fetch wishlist:",
+          error
+        );
+      }
+    };
+
     fetchProduct();
+    fetchWishlistStatus();
   }, [productId]);
 
   const decreaseQuantity = () => {
@@ -63,6 +113,49 @@ function ProductDetailsPage() {
     setQuantity(1);
   };
 
+  const handleWishlistToggle = async () => {
+    const accessToken =
+      localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsUpdatingWishlist(true);
+
+      if (isWishlisted) {
+        await api.delete(
+          `/wishlist/items/${product.id}`
+        );
+
+        setIsWishlisted(false);
+      } else {
+        await api.post("/wishlist/items", {
+          productId: product.id,
+        });
+
+        setIsWishlisted(true);
+      }
+    } catch (error) {
+      if (
+        !isWishlisted &&
+        error.response?.status === 409
+      ) {
+        setIsWishlisted(true);
+        return;
+      }
+
+      console.error(
+        "Failed to update wishlist:",
+        error
+      );
+    } finally {
+      setIsUpdatingWishlist(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="product-details-page">
@@ -81,7 +174,10 @@ function ProductDetailsPage() {
         <Navbar />
 
         <main className="product-details-container">
-          <Link to="/products" className="back-link">
+          <Link
+            to="/products"
+            className="back-link"
+          >
             ← Back to products
           </Link>
 
@@ -96,7 +192,10 @@ function ProductDetailsPage() {
       <Navbar />
 
       <main className="product-details-container">
-        <Link to="/products" className="back-link">
+        <Link
+          to="/products"
+          className="back-link"
+        >
           ← Back to products
         </Link>
 
@@ -158,7 +257,8 @@ function ProductDetailsPage() {
                   <span className="stock-dot"></span>
 
                   <span>
-                    {selectedVariant.stock} items available
+                    {selectedVariant.stock} items
+                    available
                   </span>
                 </div>
 
@@ -182,7 +282,8 @@ function ProductDetailsPage() {
                       type="button"
                       onClick={increaseQuantity}
                       disabled={
-                        quantity >= selectedVariant.stock
+                        quantity >=
+                        selectedVariant.stock
                       }
                     >
                       +
@@ -204,9 +305,20 @@ function ProductDetailsPage() {
               <button
                 type="button"
                 className="add-wishlist-button"
+                onClick={handleWishlistToggle}
+                disabled={isUpdatingWishlist}
               >
-                <span>♡</span>
-                <span>Add to wishlist</span>
+                <span>
+                  {isWishlisted ? "♥" : "♡"}
+                </span>
+
+                <span>
+                  {isUpdatingWishlist
+                    ? "Updating..."
+                    : isWishlisted
+                      ? "Remove from wishlist"
+                      : "Add to wishlist"}
+                </span>
               </button>
             </div>
           </div>
