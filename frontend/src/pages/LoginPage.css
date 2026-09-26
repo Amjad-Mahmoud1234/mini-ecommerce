@@ -288,3 +288,15 @@
     display: none;
   }
 }
+
+.login-error {
+  margin: 0 0 16px;
+  color: #b42318;
+  font-size: 13px;
+}
+
+.login-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+}

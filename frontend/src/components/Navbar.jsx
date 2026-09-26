@@ -1,11 +1,27 @@
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import api from "../services/api";
 import "./Navbar.css";
 
 function Navbar() {
-  // Temporary UI mock.
-  // Later this will come from the authenticated user.
-  const userName = "Amjad";
-  const userInitial = userName.charAt(0).toUpperCase();
+  const navigate = useNavigate();
+
+  const storedUser = localStorage.getItem("user");
+  const user = storedUser
+    ? JSON.parse(storedUser)
+    : null;
+
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      console.error("Logout failed:", error);
+    } finally {
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("user");
+
+      navigate("/login");
+    }
+  };
 
   return (
     <header className="navbar">
@@ -29,25 +45,31 @@ function Navbar() {
             Cart
           </NavLink>
 
-          <div className="navbar-account">
-            <div className="user-info">
-              <span className="user-avatar">
-                {userInitial}
-              </span>
+          {user ? (
+            <div className="navbar-account">
+              <div className="user-info">
+                <span className="user-avatar">
+                  {user.email.charAt(0).toUpperCase()}
+                </span>
+              </div>
 
-              <span className="user-name">
-                {userName}
-              </span>
+              <button
+                className="sign-out-button"
+                type="button"
+                onClick={handleLogout}
+              >
+                <span className="nav-icon">↪</span>
+                Sign out
+              </button>
             </div>
-
-            <button
-              className="sign-out-button"
-              type="button"
+          ) : (
+            <Link
+              to="/login"
+              className="sign-in-link"
             >
-              <span className="nav-icon">↪</span>
-              Sign out
-            </button>
-          </div>
+              Sign in
+            </Link>
+          )}
         </nav>
       </div>
     </header>

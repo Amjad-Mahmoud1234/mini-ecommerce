@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 
+import ProtectedRoute from "./components/ProtectedRoute";
+
 import LoginPage from "./pages/LoginPage";
 import ProductsPage from "./pages/ProductsPage";
 import ProductDetailsPage from "./pages/ProductDetailsPage";
@@ -11,21 +13,63 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 function App() {
   return (
     <Routes>
-      <Route path="/login" element={<LoginPage />} />
-
-      <Route path="/products" element={<ProductsPage />} />
-      <Route path="/products/:productId" element={<ProductDetailsPage />} />
-
-      <Route path="/cart" element={<CartPage />} />
-      <Route path="/wishlist" element={<WishlistPage />} />
-
-      <Route path="/checkout" element={<CheckoutPage />} />
+      {/* Public routes */}
       <Route
-        path="/order-confirmation"
-        element={<OrderConfirmationPage />}
+        path="/login"
+        element={<LoginPage />}
       />
 
-      <Route path="/" element={<Navigate to="/products" replace />} />
+      <Route
+        path="/products"
+        element={<ProductsPage />}
+      />
+
+      <Route
+        path="/products/:productId"
+        element={<ProductDetailsPage />}
+      />
+
+      {/* Protected routes */}
+      <Route
+        path="/cart"
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/wishlist"
+        element={
+          <ProtectedRoute>
+            <WishlistPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/checkout"
+        element={
+          <ProtectedRoute>
+            <CheckoutPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/order-confirmation"
+        element={
+          <ProtectedRoute>
+            <OrderConfirmationPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/"
+        element={<Navigate to="/products" replace />}
+      />
     </Routes>
   );
 }
