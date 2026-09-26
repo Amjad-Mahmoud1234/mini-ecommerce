@@ -85,25 +85,6 @@ export const addItemToCart = async (
   variantId,
   quantity
 ) => {
-  productId = Number(productId);
-  variantId = Number(variantId);
-  quantity = Number(quantity);
-
-  if (!Number.isInteger(productId) || productId <= 0) {
-    throw new AppError("Invalid product ID", 400);
-  }
-
-  if (!Number.isInteger(variantId) || variantId <= 0) {
-    throw new AppError("Variant ID is required", 400);
-  }
-
-  if (!Number.isInteger(quantity) || quantity <= 0) {
-    throw new AppError(
-      "Quantity must be a positive integer",
-      400
-    );
-  }
-
   const product = await prisma.product.findUnique({
     where: {
       id: productId,
@@ -196,12 +177,6 @@ export const updateCartItemById = async (
   quantity,
   variantId
 ) => {
-  itemId = Number(itemId);
-
-  if (!Number.isInteger(itemId) || itemId <= 0) {
-    throw new AppError("Invalid cart item ID", 400);
-  }
-
   const item = await prisma.cartItem.findFirst({
     where: {
       id: itemId,
@@ -229,33 +204,13 @@ export const updateCartItemById = async (
 
   const newQuantity =
     quantity !== undefined
-      ? Number(quantity)
+      ? quantity
       : item.quantity;
-
-  if (
-    !Number.isInteger(newQuantity) ||
-    newQuantity <= 0
-  ) {
-    throw new AppError(
-      "Quantity must be a positive integer",
-      400
-    );
-  }
 
   const newVariantId =
     variantId !== undefined
-      ? Number(variantId)
+      ? variantId
       : item.variantId;
-
-  if (
-    !Number.isInteger(newVariantId) ||
-    newVariantId <= 0
-  ) {
-    throw new AppError(
-      "Invalid variant ID",
-      400
-    );
-  }
 
   const selectedVariant =
     item.product.variants.find(
@@ -352,15 +307,6 @@ export const removeCartItemById = async (
   userId,
   itemId
 ) => {
-  itemId = Number(itemId);
-
-  if (!Number.isInteger(itemId) || itemId <= 0) {
-    throw new AppError(
-      "Invalid cart item ID",
-      400
-    );
-  }
-
   const item = await prisma.cartItem.findFirst({
     where: {
       id: itemId,

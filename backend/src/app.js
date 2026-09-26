@@ -7,6 +7,7 @@ import wishlistRoutes from "./routes/wishlist.routes.js";
 import cartRoutes from "./routes/cart.routes.js";
 import orderRoutes from "./routes/order.routes.js";
 import { globalErrorHandler } from './middlewares/error.middleware.js';
+import AppError from "./utils/AppError.js";
 
 const app = express();
 
@@ -28,6 +29,10 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/wishlist", wishlistRoutes);
 app.use("/api/v1/cart", cartRoutes);
 app.use("/api/v1/orders", orderRoutes);
+
+app.all(/.*/, (req, res, next) => {
+  next(new AppError("Route not found", 404));
+});
 
 app.use(globalErrorHandler);
 

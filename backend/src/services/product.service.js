@@ -11,7 +11,7 @@ export const getAllProducts = async () => {
 export const getProductById = (id) => {
   return prisma.product.findUnique({
     where: {
-      id: Number(id),
+      id,
     },
     include: {
       variants: true,
