@@ -1,0 +1,150 @@
+.product-card {
+  min-width: 0;
+
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid #e7e1d7;
+  border-radius: 12px;
+
+  box-shadow: 0 6px 18px rgba(30, 40, 35, 0.05);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+
+  box-shadow: 0 10px 25px rgba(30, 40, 35, 0.09);
+}
+
+
+/* =========================
+   IMAGE
+   ========================= */
+
+.product-image-wrapper {
+  position: relative;
+
+  margin: 8px 8px 0;
+
+  overflow: hidden;
+
+  border-radius: 9px;
+
+  background: #eeeae2;
+}
+
+.product-image-link {
+  display: block;
+
+  overflow: hidden;
+}
+
+.product-image {
+  display: block;
+
+  width: 100%;
+  aspect-ratio: 1.45 / 1;
+
+  object-fit: cover;
+
+  transition: transform 0.25s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.02);
+}
+
+
+/* =========================
+   HEART
+   ========================= */
+
+.wishlist-button {
+  position: absolute;
+
+  top: 11px;
+  right: 11px;
+
+  width: 36px;
+  height: 36px;
+
+  padding: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.95);
+
+  border: 1px solid #e1ddd4;
+  border-radius: 50%;
+
+  color: #60665f;
+
+  font-size: 21px;
+  line-height: 1;
+
+  cursor: pointer;
+
+  box-shadow: 0 2px 7px rgba(0, 0, 0, 0.06);
+
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.wishlist-button:hover {
+  color: #123f34;
+
+  transform: scale(1.06);
+}
+
+
+/* =========================
+   PRODUCT INFORMATION
+   ========================= */
+
+.product-info {
+  padding: 13px 16px 16px;
+}
+
+.product-title {
+  display: block;
+
+  color: #171d1a;
+
+  font-size: 15px;
+  font-weight: 700;
+
+  line-height: 1.35;
+
+  text-decoration: none;
+
+  transition: color 0.2s ease;
+}
+
+.product-title:hover {
+  color: #123f34;
+}
+
+.product-price {
+  margin: 8px 0 0;
+
+  color: #123f34;
+
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.product-options {
+  margin: 5px 0 0;
+
+  color: #777b76;
+
+  font-size: 12px;
+}
