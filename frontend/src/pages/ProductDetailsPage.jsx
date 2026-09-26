@@ -1,55 +1,47 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import api from "../services/api";
 import "./ProductDetailsPage.css";
 
 function ProductDetailsPage() {
   const { productId } = useParams();
 
-  // Temporary mock product.
-  // Later we will fetch it using productId from the backend.
-  const product = {
-    id: Number(productId),
-    title: "Classic Cotton T-Shirt",
-    description:
-      "A soft cotton t-shirt designed for comfortable everyday wear. Made with a simple fit that works naturally with your daily wardrobe.",
-    price: 19.99,
-    imageUrl:
-      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=1200&q=80",
-    variants: [
-      {
-        id: 1,
-        name: "Small",
-        stock: 12,
-        productId: Number(productId),
-      },
-      {
-        id: 2,
-        name: "Medium",
-        stock: 18,
-        productId: Number(productId),
-      },
-      {
-        id: 3,
-        name: "Large",
-        stock: 10,
-        productId: Number(productId),
-      },
-      {
-        id: 4,
-        name: "XL",
-        stock: 6,
-        productId: Number(productId),
-      },
-    ],
-  };
-
-  const [selectedVariant, setSelectedVariant] = useState(
-    product.variants[0]
-  );
-
+  const [product, setProduct] = useState(null);
+  const [selectedVariant, setSelectedVariant] = useState(null);
   const [quantity, setQuantity] = useState(1);
+
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await api.get(`/products/${productId}`);
+
+        const fetchedProduct = response.data.data;
+
+        setProduct(fetchedProduct);
+
+        if (fetchedProduct.variants.length > 0) {
+          setSelectedVariant(fetchedProduct.variants[0]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product:", error);
+
+        if (error.response?.status === 404) {
+          setError("Product not found.");
+        } else {
+          setError("Unable to load product. Please try again.");
+        }
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProduct();
+  }, [productId]);
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -58,7 +50,10 @@ function ProductDetailsPage() {
   };
 
   const increaseQuantity = () => {
-    if (quantity < selectedVariant.stock) {
+    if (
+      selectedVariant &&
+      quantity < selectedVariant.stock
+    ) {
       setQuantity(quantity + 1);
     }
   };
@@ -67,6 +62,34 @@ function ProductDetailsPage() {
     setSelectedVariant(variant);
     setQuantity(1);
   };
+
+  if (loading) {
+    return (
+      <div className="product-details-page">
+        <Navbar />
+
+        <main className="product-details-container">
+          <p>Loading product...</p>
+        </main>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="product-details-page">
+        <Navbar />
+
+        <main className="product-details-container">
+          <Link to="/products" className="back-link">
+            ← Back to products
+          </Link>
+
+          <p>{error}</p>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="product-details-page">
@@ -115,7 +138,7 @@ function ProductDetailsPage() {
                     key={variant.id}
                     type="button"
                     className={
-                      selectedVariant.id === variant.id
+                      selectedVariant?.id === variant.id
                         ? "variant-button active"
                         : "variant-button"
                     }
@@ -129,39 +152,45 @@ function ProductDetailsPage() {
               </div>
             </div>
 
-            <div className="stock-info">
-              <span className="stock-dot"></span>
+            {selectedVariant && (
+              <>
+                <div className="stock-info">
+                  <span className="stock-dot"></span>
 
-              <span>
-                {selectedVariant.stock} items available
-              </span>
-            </div>
+                  <span>
+                    {selectedVariant.stock} items available
+                  </span>
+                </div>
 
-            <div className="details-section">
-              <label className="details-section-label">
-                QUANTITY
-              </label>
+                <div className="details-section">
+                  <label className="details-section-label">
+                    QUANTITY
+                  </label>
 
-              <div className="quantity-selector">
-                <button
-                  type="button"
-                  onClick={decreaseQuantity}
-                  disabled={quantity === 1}
-                >
-                  −
-                </button>
+                  <div className="quantity-selector">
+                    <button
+                      type="button"
+                      onClick={decreaseQuantity}
+                      disabled={quantity === 1}
+                    >
+                      −
+                    </button>
 
-                <span>{quantity}</span>
+                    <span>{quantity}</span>
 
-                <button
-                  type="button"
-                  onClick={increaseQuantity}
-                  disabled={quantity >= selectedVariant.stock}
-                >
-                  +
-                </button>
-              </div>
-            </div>
+                    <button
+                      type="button"
+                      onClick={increaseQuantity}
+                      disabled={
+                        quantity >= selectedVariant.stock
+                      }
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
 
             <div className="product-actions">
               <button
