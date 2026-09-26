@@ -1,114 +1,124 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import api from "../services/api";
 import "./CartPage.css";
 
 function CartPage() {
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      productId: 1,
-      title: "Classic Cotton T-Shirt",
-      price: 19.99,
-      imageUrl:
-        "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?auto=format&fit=crop&w=700&q=80",
-      quantity: 2,
-      variantId: 2,
-      variants: [
-        { id: 1, name: "Small", stock: 12 },
-        { id: 2, name: "Medium", stock: 18 },
-        { id: 3, name: "Large", stock: 10 },
-        { id: 4, name: "XL", stock: 6 },
-      ],
-    },
-    {
-      id: 2,
-      productId: 3,
-      title: "Road Running Sneakers",
-      price: 89,
-      imageUrl:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=700&q=80",
-      quantity: 1,
-      variantId: 11,
-      variants: [
-        { id: 9, name: "40", stock: 7 },
-        { id: 10, name: "41", stock: 9 },
-        { id: 11, name: "42", stock: 13 },
-        { id: 12, name: "43", stock: 6 },
-      ],
-    },
-    {
-      id: 3,
-      productId: 5,
-      title: "Everyday Backpack",
-      price: 49,
-      imageUrl:
-        "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=700&q=80",
-      quantity: 1,
-      variantId: 14,
-      variants: [
-        { id: 14, name: "Black", stock: 10 },
-        { id: 15, name: "Green", stock: 8 },
-        { id: 16, name: "Beige", stock: 5 },
-      ],
-    },
-  ]);
+  const [cart, setCart] = useState({
+    items: [],
+    total: 0,
+  });
 
-  const updateQuantity = (itemId, change) => {
-    setCartItems((currentItems) =>
-      currentItems.map((item) => {
-        if (item.id !== itemId) {
-          return item;
-        }
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [updatingItemId, setUpdatingItemId] =
+    useState(null);
 
-        const selectedVariant = item.variants.find(
-          (variant) => variant.id === item.variantId
-        );
-
-        const newQuantity = item.quantity + change;
-
-        if (
-          newQuantity < 1 ||
-          newQuantity > selectedVariant.stock
-        ) {
-          return item;
-        }
-
-        return {
-          ...item,
-          quantity: newQuantity,
-        };
-      })
-    );
+  const fetchCart = async () => {
+    try {
+      const response = await api.get("/cart");
+      setCart(response.data.data);
+      setError("");
+    } catch (error) {
+      console.error("Failed to fetch cart:", error);
+      setError(
+        "Unable to load your cart. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const changeVariant = (itemId, variantId) => {
-    setCartItems((currentItems) =>
-      currentItems.map((item) => {
-        if (item.id !== itemId) {
-          return item;
-        }
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
-        return {
-          ...item,
-          variantId: Number(variantId),
-          quantity: 1,
-        };
-      })
-    );
+  const updateQuantity = async (
+    itemId,
+    currentQuantity,
+    change
+  ) => {
+    const newQuantity = currentQuantity + change;
+
+    if (newQuantity < 1) {
+      return;
+    }
+
+    try {
+      setUpdatingItemId(itemId);
+
+      await api.patch(`/cart/items/${itemId}`, {
+        quantity: newQuantity,
+      });
+
+      await fetchCart();
+    } catch (error) {
+      console.error(
+        "Failed to update quantity:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to update quantity."
+      );
+    } finally {
+      setUpdatingItemId(null);
+    }
   };
 
-  const removeItem = (itemId) => {
-    setCartItems((currentItems) =>
-      currentItems.filter((item) => item.id !== itemId)
-    );
+  const changeVariant = async (
+    itemId,
+    variantId
+  ) => {
+    try {
+      setUpdatingItemId(itemId);
+
+      await api.patch(`/cart/items/${itemId}`, {
+        variantId: Number(variantId),
+      });
+
+      await fetchCart();
+    } catch (error) {
+      console.error(
+        "Failed to update variant:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to update variant."
+      );
+    } finally {
+      setUpdatingItemId(null);
+    }
   };
 
-  const subtotal = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
-    0
-  );
+  const removeItem = async (itemId) => {
+    try {
+      setUpdatingItemId(itemId);
+
+      await api.delete(`/cart/items/${itemId}`);
+
+      await fetchCart();
+    } catch (error) {
+      console.error(
+        "Failed to remove cart item:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to remove item."
+      );
+    } finally {
+      setUpdatingItemId(null);
+    }
+  };
+
+  const cartItems = cart.items;
 
   const totalItems = cartItems.reduce(
     (total, item) => total + item.quantity,
@@ -132,40 +142,50 @@ function CartPage() {
             </h1>
 
             <p>
-              {totalItems} {totalItems === 1 ? "item" : "items"} in
+              {totalItems}{" "}
+              {totalItems === 1 ? "item" : "items"} in
               your cart
             </p>
           </div>
 
-          <Link to="/products" className="continue-shopping">
+          <Link
+            to="/products"
+            className="continue-shopping"
+          >
             ← Continue shopping
           </Link>
         </div>
 
-        {cartItems.length === 0 ? (
-          <section className="empty-cart">
-            <div className="empty-cart-icon">🛒</div>
+        {loading && <p>Loading cart...</p>}
 
-            <h2>Your cart is empty.</h2>
+        {error && <p>{error}</p>}
 
-            <p>
-              Looks like you haven't added anything to your cart yet.
-            </p>
+        {!loading &&
+          cartItems.length === 0 && (
+            <section className="empty-cart">
+              <div className="empty-cart-icon">
+                🛒
+              </div>
 
-            <Link to="/products">
-              Browse products →
-            </Link>
-          </section>
-        ) : (
+              <h2>Your cart is empty.</h2>
+
+              <p>
+                Looks like you haven't added anything
+                to your cart yet.
+              </p>
+
+              <Link to="/products">
+                Browse products →
+              </Link>
+            </section>
+          )}
+
+        {!loading && cartItems.length > 0 && (
           <div className="cart-layout">
             <section className="cart-items">
               {cartItems.map((item) => {
-                const selectedVariant = item.variants.find(
-                  (variant) => variant.id === item.variantId
-                );
-
-                const itemSubtotal =
-                  item.price * item.quantity;
+                const isUpdating =
+                  updatingItemId === item.id;
 
                 return (
                   <article
@@ -173,12 +193,12 @@ function CartPage() {
                     className="cart-item"
                   >
                     <Link
-                      to={`/products/${item.productId}`}
+                      to={`/products/${item.product.id}`}
                       className="cart-item-image-link"
                     >
                       <img
-                        src={item.imageUrl}
-                        alt={item.title}
+                        src={item.product.imageUrl}
+                        alt={item.product.title}
                         className="cart-item-image"
                       />
                     </Link>
@@ -187,20 +207,24 @@ function CartPage() {
                       <div className="cart-item-top">
                         <div>
                           <Link
-                            to={`/products/${item.productId}`}
+                            to={`/products/${item.product.id}`}
                             className="cart-item-title"
                           >
-                            {item.title}
+                            {item.product.title}
                           </Link>
 
                           <p className="cart-item-price">
-                            ${item.price.toFixed(2)}
+                            $
+                            {Number(
+                              item.product.price
+                            ).toFixed(2)}
                           </p>
                         </div>
 
                         <button
                           type="button"
                           className="remove-button"
+                          disabled={isUpdating}
                           onClick={() =>
                             removeItem(item.id)
                           }
@@ -219,7 +243,8 @@ function CartPage() {
 
                           <select
                             id={`variant-${item.id}`}
-                            value={item.variantId}
+                            value={item.variant.id}
+                            disabled={isUpdating}
                             onChange={(event) =>
                               changeVariant(
                                 item.id,
@@ -227,14 +252,16 @@ function CartPage() {
                               )
                             }
                           >
-                            {item.variants.map((variant) => (
-                              <option
-                                key={variant.id}
-                                value={variant.id}
-                              >
-                                {variant.name}
-                              </option>
-                            ))}
+                            {item.product.variants.map(
+                              (variant) => (
+                                <option
+                                  key={variant.id}
+                                  value={variant.id}
+                                >
+                                  {variant.name}
+                                </option>
+                              )
+                            )}
                           </select>
                         </div>
 
@@ -245,23 +272,37 @@ function CartPage() {
                             <button
                               type="button"
                               onClick={() =>
-                                updateQuantity(item.id, -1)
+                                updateQuantity(
+                                  item.id,
+                                  item.quantity,
+                                  -1
+                                )
                               }
-                              disabled={item.quantity === 1}
+                              disabled={
+                                isUpdating ||
+                                item.quantity === 1
+                              }
                             >
                               −
                             </button>
 
-                            <span>{item.quantity}</span>
+                            <span>
+                              {item.quantity}
+                            </span>
 
                             <button
                               type="button"
                               onClick={() =>
-                                updateQuantity(item.id, 1)
+                                updateQuantity(
+                                  item.id,
+                                  item.quantity,
+                                  1
+                                )
                               }
                               disabled={
+                                isUpdating ||
                                 item.quantity >=
-                                selectedVariant.stock
+                                  item.variant.stock
                               }
                             >
                               +
@@ -275,7 +316,10 @@ function CartPage() {
                       <span>SUBTOTAL</span>
 
                       <strong>
-                        ${itemSubtotal.toFixed(2)}
+                        $
+                        {Number(
+                          item.subtotal
+                        ).toFixed(2)}
                       </strong>
                     </div>
                   </article>
@@ -299,7 +343,9 @@ function CartPage() {
 
               <div className="summary-row">
                 <span>Subtotal</span>
-                <span>${subtotal.toFixed(2)}</span>
+                <span>
+                  ${Number(cart.total).toFixed(2)}
+                </span>
               </div>
 
               <div className="summary-row">
@@ -311,7 +357,9 @@ function CartPage() {
 
               <div className="summary-total">
                 <span>Total</span>
-                <strong>${subtotal.toFixed(2)}</strong>
+                <strong>
+                  ${Number(cart.total).toFixed(2)}
+                </strong>
               </div>
 
               <Link
@@ -323,7 +371,8 @@ function CartPage() {
               </Link>
 
               <p className="summary-note">
-                Taxes and shipping are mocked for this checkout.
+                Taxes and shipping are mocked for this
+                checkout.
               </p>
             </aside>
           </div>

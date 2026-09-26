@@ -1,25 +1,44 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+} from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 import "./WishlistPage.css";
 
 function WishlistPage() {
-  const [wishlistItems, setWishlistItems] = useState([]);
+  const navigate = useNavigate();
+
+  const [wishlistItems, setWishlistItems] =
+    useState([]);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [removingProductId, setRemovingProductId] =
-    useState(null);
+
+  const [
+    removingProductId,
+    setRemovingProductId,
+  ] = useState(null);
+
+  const [
+    movingProductId,
+    setMovingProductId,
+  ] = useState(null);
 
   useEffect(() => {
     const fetchWishlist = async () => {
       try {
-        const response = await api.get("/wishlist");
+        const response =
+          await api.get("/wishlist");
 
         setWishlistItems(response.data.data);
       } catch (error) {
-        console.error("Failed to fetch wishlist:", error);
+        console.error(
+          "Failed to fetch wishlist:",
+          error
+        );
 
         setError(
           error.response?.data?.message ||
@@ -33,17 +52,23 @@ function WishlistPage() {
     fetchWishlist();
   }, []);
 
-  const removeFromWishlist = async (productId) => {
+  const removeFromWishlist = async (
+    productId
+  ) => {
     try {
       setRemovingProductId(productId);
 
-      await api.delete(`/wishlist/items/${productId}`);
+      await api.delete(
+        `/wishlist/items/${productId}`
+      );
 
       setWishlistItems((currentItems) =>
         currentItems.filter(
           (item) => item.id !== productId
         )
       );
+
+      setError("");
     } catch (error) {
       console.error(
         "Failed to remove wishlist item:",
@@ -56,6 +81,62 @@ function WishlistPage() {
       );
     } finally {
       setRemovingProductId(null);
+    }
+  };
+
+  const moveToCart = async (product) => {
+    if (product.variants.length > 1) {
+      navigate(`/products/${product.id}`);
+      return;
+    }
+
+    const variant = product.variants[0];
+
+    if (!variant) {
+      setError(
+        "This product does not have an available variant."
+      );
+      return;
+    }
+
+    if (variant.stock < 1) {
+      setError(
+        "This product is currently out of stock."
+      );
+      return;
+    }
+
+    try {
+      setMovingProductId(product.id);
+      setError("");
+
+      await api.post("/cart/items", {
+        productId: product.id,
+        variantId: variant.id,
+        quantity: 1,
+      });
+
+      await api.delete(
+        `/wishlist/items/${product.id}`
+      );
+
+      setWishlistItems((currentItems) =>
+        currentItems.filter(
+          (item) => item.id !== product.id
+        )
+      );
+    } catch (error) {
+      console.error(
+        "Failed to move product to cart:",
+        error
+      );
+
+      setError(
+        error.response?.data?.message ||
+          "Unable to move product to cart."
+      );
+    } finally {
+      setMovingProductId(null);
     }
   };
 
@@ -135,7 +216,9 @@ function WishlistPage() {
                 className="wishlist-card"
               >
                 <div className="wishlist-image-wrapper">
-                  <Link to={`/products/${item.id}`}>
+                  <Link
+                    to={`/products/${item.id}`}
+                  >
                     <img
                       src={item.imageUrl}
                       alt={item.title}
@@ -148,10 +231,14 @@ function WishlistPage() {
                     className="wishlist-remove-icon"
                     aria-label={`Remove ${item.title} from wishlist`}
                     disabled={
-                      removingProductId === item.id
+                      removingProductId ===
+                        item.id ||
+                      movingProductId === item.id
                     }
                     onClick={() =>
-                      removeFromWishlist(item.id)
+                      removeFromWishlist(
+                        item.id
+                      )
                     }
                   >
                     ×
@@ -167,17 +254,41 @@ function WishlistPage() {
                   </Link>
 
                   <p className="wishlist-price">
-                    ${Number(item.price).toFixed(2)}
+                    $
+                    {Number(
+                      item.price
+                    ).toFixed(2)}
                   </p>
 
                   {item.variants.length > 1 && (
                     <p className="wishlist-options">
-                      {item.variants.length} options
-                      available
+                      {item.variants.length}{" "}
+                      options available
                     </p>
                   )}
 
                   <div className="wishlist-actions">
+                    <button
+                      type="button"
+                      className="move-cart-button"
+                      disabled={
+                        movingProductId ===
+                          item.id ||
+                        removingProductId ===
+                          item.id
+                      }
+                      onClick={() =>
+                        moveToCart(item)
+                      }
+                    >
+                      {movingProductId ===
+                      item.id
+                        ? "Moving..."
+                        : item.variants.length > 1
+                          ? "Choose options"
+                          : "Move to cart"}
+                    </button>
+
                     <Link
                       to={`/products/${item.id}`}
                       className="view-product-button"

@@ -21,12 +21,21 @@ function ProductDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Wishlist state
   const [isWishlisted, setIsWishlisted] =
     useState(false);
 
   const [
     isUpdatingWishlist,
     setIsUpdatingWishlist,
+  ] = useState(false);
+
+  // Cart state
+  const [cartItems, setCartItems] = useState([]);
+
+  const [
+    isUpdatingCart,
+    setIsUpdatingCart,
   ] = useState(false);
 
   useEffect(() => {
@@ -89,9 +98,38 @@ function ProductDetailsPage() {
       }
     };
 
+    const fetchCart = async () => {
+      const accessToken =
+        localStorage.getItem("accessToken");
+
+      if (!accessToken) {
+        return;
+      }
+
+      try {
+        const response = await api.get("/cart");
+
+        setCartItems(response.data.data.items);
+      } catch (error) {
+        console.error(
+          "Failed to fetch cart:",
+          error
+        );
+      }
+    };
+
     fetchProduct();
     fetchWishlistStatus();
+    fetchCart();
   }, [productId]);
+
+  const currentCartItem = selectedVariant
+    ? cartItems.find(
+        (item) =>
+          item.product.id === product?.id &&
+          item.variant.id === selectedVariant.id
+      )
+    : null;
 
   const decreaseQuantity = () => {
     if (quantity > 1) {
@@ -156,6 +194,56 @@ function ProductDetailsPage() {
     }
   };
 
+  const handleCartToggle = async () => {
+    const accessToken =
+      localStorage.getItem("accessToken");
+
+    if (!accessToken) {
+      navigate("/login");
+      return;
+    }
+
+    if (!selectedVariant) {
+      return;
+    }
+
+    try {
+      setIsUpdatingCart(true);
+
+      if (currentCartItem) {
+        await api.delete(
+          `/cart/items/${currentCartItem.id}`
+        );
+
+        setCartItems((currentItems) =>
+          currentItems.filter(
+            (item) =>
+              item.id !== currentCartItem.id
+          )
+        );
+      } else {
+        await api.post("/cart/items", {
+          productId: product.id,
+          variantId: selectedVariant.id,
+          quantity,
+        });
+
+        const response = await api.get("/cart");
+
+        setCartItems(
+          response.data.data.items
+        );
+      }
+    } catch (error) {
+      console.error(
+        "Failed to update cart:",
+        error
+      );
+    } finally {
+      setIsUpdatingCart(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="product-details-page">
@@ -217,7 +305,8 @@ function ProductDetailsPage() {
             <h1>{product.title}</h1>
 
             <p className="details-price">
-              ${Number(product.price).toFixed(2)}
+              $
+              {Number(product.price).toFixed(2)}
             </p>
 
             <p className="details-description">
@@ -232,22 +321,27 @@ function ProductDetailsPage() {
               </label>
 
               <div className="variant-options">
-                {product.variants.map((variant) => (
-                  <button
-                    key={variant.id}
-                    type="button"
-                    className={
-                      selectedVariant?.id === variant.id
-                        ? "variant-button active"
-                        : "variant-button"
-                    }
-                    onClick={() =>
-                      handleVariantChange(variant)
-                    }
-                  >
-                    {variant.name}
-                  </button>
-                ))}
+                {product.variants.map(
+                  (variant) => (
+                    <button
+                      key={variant.id}
+                      type="button"
+                      className={
+                        selectedVariant?.id ===
+                        variant.id
+                          ? "variant-button active"
+                          : "variant-button"
+                      }
+                      onClick={() =>
+                        handleVariantChange(
+                          variant
+                        )
+                      }
+                    >
+                      {variant.name}
+                    </button>
+                  )
+                )}
               </div>
             </div>
 
@@ -297,9 +391,26 @@ function ProductDetailsPage() {
               <button
                 type="button"
                 className="add-cart-button"
+                onClick={handleCartToggle}
+                disabled={
+                  isUpdatingCart ||
+                  !selectedVariant ||
+                  selectedVariant.stock === 0
+                }
               >
-                <span>Add to cart</span>
-                <span>→</span>
+                <span>
+                  {isUpdatingCart
+                    ? "Updating..."
+                    : currentCartItem
+                      ? "Remove from cart"
+                      : "Add to cart"}
+                </span>
+
+                <span>
+                  {currentCartItem
+                    ? "×"
+                    : "→"}
+                </span>
               </button>
 
               <button
