@@ -13,7 +13,6 @@ export const getUserWishlist = async (userId) => {
             title: true,
             price: true,
             imageUrl: true,
-            stock: true,
             variants: {
               select: {
                 id: true,
