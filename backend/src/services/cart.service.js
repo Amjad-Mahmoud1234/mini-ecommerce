@@ -18,6 +18,13 @@ export const getUserCart = async (userId) => {
               title: true,
               price: true,
               imageUrl: true,
+              variants: {
+                select: {
+                  id: true,
+                  name: true,
+                  stock: true,
+                },
+              },
             },
           },
 
