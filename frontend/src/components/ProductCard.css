@@ -22,9 +22,7 @@
 }
 
 
-/* =========================
-   IMAGE
-   ========================= */
+/* IMAGE */
 
 .product-image-wrapper {
   position: relative;
@@ -60,9 +58,7 @@
 }
 
 
-/* =========================
-   HEART
-   ========================= */
+/* HEART */
 
 .wishlist-button {
   position: absolute;
@@ -117,9 +113,7 @@
 }
 
 
-/* =========================
-   PRODUCT INFORMATION
-   ========================= */
+/* PRODUCT INFORMATION */
 
 .product-info {
   padding: 13px 16px 16px;

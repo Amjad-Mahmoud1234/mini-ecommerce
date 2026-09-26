@@ -4,6 +4,7 @@ import {
   useNavigate,
   useParams,
 } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -248,6 +249,10 @@ function ProductDetailsPage() {
   if (loading) {
     return (
       <div className="product-details-page">
+        <Helmet>
+          <title>NOVA | Product</title>
+        </Helmet>
+
         <Navbar />
 
         <main className="product-details-container">
@@ -260,6 +265,10 @@ function ProductDetailsPage() {
   if (error) {
     return (
       <div className="product-details-page">
+        <Helmet>
+          <title>NOVA | Product</title>
+        </Helmet>
+
         <Navbar />
 
         <main className="product-details-container">
@@ -278,6 +287,10 @@ function ProductDetailsPage() {
 
   return (
     <div className="product-details-page">
+      <Helmet>
+        <title>NOVA | {product.title}</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="product-details-container">

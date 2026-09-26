@@ -10,10 +10,7 @@
     padding: 42px 24px 80px;
   }
   
-  
-  /* =========================
-     HEADING
-     ========================= */
+/* HEADING */
   
   .wishlist-heading {
     margin-bottom: 32px;
@@ -92,9 +89,7 @@
   }
   
   
-  /* =========================
-     GRID
-     ========================= */
+/* GRID */
   
   .wishlist-grid {
     display: grid;
@@ -105,9 +100,7 @@
   }
   
   
-  /* =========================
-     CARD
-     ========================= */
+/* CARD */
   
   .wishlist-card {
     overflow: hidden;
@@ -131,9 +124,7 @@
   }
   
   
-  /* =========================
-     IMAGE
-     ========================= */
+/* IMAGE */
   
   .wishlist-image-wrapper {
     position: relative;
@@ -167,9 +158,7 @@
   }
   
   
-  /* =========================
-     REMOVE BUTTON
-     ========================= */
+/* REMOVE BUTTON */
   
   .wishlist-remove-icon {
     position: absolute;
@@ -211,9 +200,7 @@
   }
   
   
-  /* =========================
-     CONTENT
-     ========================= */
+/* CONTENT */
   
   .wishlist-card-content {
     padding: 15px 16px 17px;
@@ -256,9 +243,7 @@
   }
   
   
-  /* =========================
-     ACTIONS
-     ========================= */
+/* ACTIONS */
   
   .wishlist-actions {
     margin-top: 18px;
@@ -322,9 +307,7 @@
   }
   
   
-  /* =========================
-     EMPTY STATE
-     ========================= */
+/* EMPTY STATE */
   
   .empty-wishlist {
     padding: 75px 20px;
@@ -371,9 +354,7 @@
   }
   
   
-  /* =========================
-     TABLET
-     ========================= */
+/* TABLET */
   
   @media (max-width: 850px) {
     .wishlist-grid {
@@ -382,9 +363,7 @@
   }
   
   
-  /* =========================
-     MOBILE
-     ========================= */
+/* MOBILE */
   
   @media (max-width: 550px) {
     .wishlist-container {

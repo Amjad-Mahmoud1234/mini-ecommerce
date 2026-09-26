@@ -3,6 +3,7 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import "./OrderConfirmationPage.css";
@@ -34,6 +35,10 @@ function OrderConfirmationPage() {
 
   return (
     <div className="confirmation-page">
+      <Helmet>
+        <title>NOVA | Order Confirmed</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="confirmation-container">

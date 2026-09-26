@@ -4,10 +4,7 @@
   background: #f7f3eb;
 }
 
-
-/* =========================
-   HEADER
-   ========================= */
+/* HEADER */
 
 .login-header {
   width: 100%;
@@ -49,10 +46,7 @@
   font-size: 12px;
 }
 
-
-/* =========================
-   MAIN
-   ========================= */
+/* MAIN */
 
 .login-main {
   min-height: calc(100vh - 69px);
@@ -68,10 +62,7 @@
   max-width: 430px;
 }
 
-
-/* =========================
-   INTRO
-   ========================= */
+/* INTRO */
 
 .login-intro {
   margin-bottom: 30px;
@@ -127,10 +118,7 @@
   line-height: 1.7;
 }
 
-
-/* =========================
-   CARD
-   ========================= */
+/* CARD */
 
 .login-card {
   padding: 30px;
@@ -143,10 +131,7 @@
   box-shadow: 0 10px 30px rgba(30, 40, 35, 0.06);
 }
 
-
-/* =========================
-   INPUTS
-   ========================= */
+/* INPUTS */
 
 .login-field {
   margin-bottom: 20px;
@@ -200,10 +185,7 @@
   box-shadow: 0 0 0 3px rgba(18, 63, 52, 0.08);
 }
 
-
-/* =========================
-   BUTTON
-   ========================= */
+/* BUTTON */
 
 .login-button {
   width: 100%;
@@ -243,10 +225,7 @@
   font-size: 19px;
 }
 
-
-/* =========================
-   FOOTER TEXT
-   ========================= */
+/* FOOTER TEXT */
 
 .login-secure {
   margin: 18px 0 0;
@@ -258,10 +237,7 @@
   text-align: center;
 }
 
-
-/* =========================
-   RESPONSIVE
-   ========================= */
+/* RESPONSIVE */
 
 @media (max-width: 600px) {
   .login-header-container {

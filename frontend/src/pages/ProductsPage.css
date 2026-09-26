@@ -12,10 +12,7 @@
   padding: 40px 24px 80px;
 }
 
-
-/* =========================
-   INTRO
-   ========================= */
+/* INTRO */
 
 .products-intro {
   margin-bottom: 38px;
@@ -72,10 +69,7 @@
   line-height: 1.7;
 }
 
-
-/* =========================
-   GRID
-   ========================= */
+/* GRID */
 
 .products-grid {
   display: grid;
@@ -85,10 +79,7 @@
   gap: 18px;
 }
 
-
-/* =========================
-   TABLET
-   ========================= */
+/* TABLET */
 
 @media (max-width: 900px) {
   .products-container {
@@ -106,10 +97,7 @@
   }
 }
 
-
-/* =========================
-   MOBILE
-   ========================= */
+/* MOBILE */
 
 @media (max-width: 520px) {
   .products-container {

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
@@ -83,6 +84,10 @@ function ProductsPage() {
 
   return (
     <div className="products-page">
+      <Helmet>
+        <title>NOVA | Products</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="products-container">

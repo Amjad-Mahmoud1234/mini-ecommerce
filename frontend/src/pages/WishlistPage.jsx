@@ -3,6 +3,7 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -144,6 +145,10 @@ function WishlistPage() {
   if (loading) {
     return (
       <div className="wishlist-page">
+        <Helmet>
+          <title>NOVA | Wishlist</title>
+        </Helmet>
+
         <Navbar />
 
         <main className="wishlist-container">
@@ -155,6 +160,10 @@ function WishlistPage() {
 
   return (
     <div className="wishlist-page">
+      <Helmet>
+        <title>NOVA | Wishlist</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="wishlist-container">

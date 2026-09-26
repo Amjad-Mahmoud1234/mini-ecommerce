@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -130,6 +131,10 @@ function CartPage() {
 
   return (
     <div className="cart-page">
+      <Helmet>
+        <title>NOVA | Cart</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="cart-container">

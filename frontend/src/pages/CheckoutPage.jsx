@@ -3,6 +3,7 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
 
 import Navbar from "../components/Navbar";
 import LoadingSpinner from "../components/LoadingSpinner";
@@ -90,6 +91,10 @@ function CheckoutPage() {
   if (loading) {
     return (
       <div className="checkout-page">
+        <Helmet>
+          <title>NOVA | Checkout</title>
+        </Helmet>
+
         <Navbar />
 
         <main className="checkout-container">
@@ -102,6 +107,10 @@ function CheckoutPage() {
   if (cart.items.length === 0) {
     return (
       <div className="checkout-page">
+        <Helmet>
+          <title>NOVA | Checkout</title>
+        </Helmet>
+
         <Navbar />
 
         <main className="checkout-container">
@@ -137,6 +146,10 @@ function CheckoutPage() {
 
   return (
     <div className="checkout-page">
+      <Helmet>
+        <title>NOVA | Checkout</title>
+      </Helmet>
+
       <Navbar />
 
       <main className="checkout-container">

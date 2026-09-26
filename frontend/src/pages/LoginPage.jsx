@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+
 import api from "../services/api";
 import "./LoginPage.css";
 
@@ -42,6 +44,10 @@ function LoginPage() {
 
   return (
     <div className="login-page">
+      <Helmet>
+        <title>NOVA | Sign In</title>
+      </Helmet>
+
       <header className="login-header">
         <div className="login-header-container">
           <Link to="/products" className="login-logo">
