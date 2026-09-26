@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../services/api";
 import "./WishlistPage.css";
 
@@ -146,7 +147,7 @@ function WishlistPage() {
         <Navbar />
 
         <main className="wishlist-container">
-          <p>Loading wishlist...</p>
+          <LoadingSpinner message="Loading wishlist..." />
         </main>
       </div>
     );

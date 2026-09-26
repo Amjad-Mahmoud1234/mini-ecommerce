@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../services/api";
 import "./CheckoutPage.css";
 
@@ -92,7 +93,7 @@ function CheckoutPage() {
         <Navbar />
 
         <main className="checkout-container">
-          <p>Loading checkout...</p>
+          <LoadingSpinner message="Loading checkout..." />
         </main>
       </div>
     );

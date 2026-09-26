@@ -6,6 +6,7 @@ import {
 } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../services/api";
 import "./ProductDetailsPage.css";
 
@@ -250,7 +251,7 @@ function ProductDetailsPage() {
         <Navbar />
 
         <main className="product-details-container">
-          <p>Loading product...</p>
+          <LoadingSpinner message="Loading product..." />
         </main>
       </div>
     );
@@ -305,8 +306,7 @@ function ProductDetailsPage() {
             <h1>{product.title}</h1>
 
             <p className="details-price">
-              $
-              {Number(product.price).toFixed(2)}
+              ${Number(product.price).toFixed(2)}
             </p>
 
             <p className="details-description">
@@ -407,9 +407,7 @@ function ProductDetailsPage() {
                 </span>
 
                 <span>
-                  {currentCartItem
-                    ? "×"
-                    : "→"}
+                  {currentCartItem ? "×" : "→"}
                 </span>
               </button>
 

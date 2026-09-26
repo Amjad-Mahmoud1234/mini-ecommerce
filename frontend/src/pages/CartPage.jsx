@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../services/api";
 import "./CartPage.css";
 
@@ -19,10 +20,12 @@ function CartPage() {
   const fetchCart = async () => {
     try {
       const response = await api.get("/cart");
+
       setCart(response.data.data);
       setError("");
     } catch (error) {
       console.error("Failed to fetch cart:", error);
+
       setError(
         "Unable to load your cart. Please try again."
       );
@@ -156,7 +159,9 @@ function CartPage() {
           </Link>
         </div>
 
-        {loading && <p>Loading cart...</p>}
+        {loading && (
+          <LoadingSpinner message="Loading your cart..." />
+        )}
 
         {error && <p>{error}</p>}
 
@@ -357,6 +362,7 @@ function CartPage() {
 
               <div className="summary-total">
                 <span>Total</span>
+
                 <strong>
                   ${Number(cart.total).toFixed(2)}
                 </strong>

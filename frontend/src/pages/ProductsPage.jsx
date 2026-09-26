@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import Navbar from "../components/Navbar";
 import ProductCard from "../components/ProductCard";
+import LoadingSpinner from "../components/LoadingSpinner";
 import api from "../services/api";
 import "./ProductsPage.css";
 
@@ -103,7 +104,9 @@ function ProductsPage() {
           </p>
         </section>
 
-        {loading && <p>Loading products...</p>}
+        {loading && (
+          <LoadingSpinner message="Loading products..." />
+        )}
 
         {error && <p>{error}</p>}
 
