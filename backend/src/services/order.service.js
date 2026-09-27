@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import prisma from "../config/db.js";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/appError.js";
 
 export const placeOrder = async (userId) => {
   return prisma.$transaction(async (tx) => {

@@ -1,5 +1,5 @@
 import prisma from "../config/db.js";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/appError.js";
 
 export const getUserCart = async (userId) => {
   const cart = await prisma.cart.findUnique({

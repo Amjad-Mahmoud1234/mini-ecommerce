@@ -1,5 +1,5 @@
 import prisma from "../config/db.js";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/appError.js";
 
 export const getUserWishlist = async (userId) => {
   const wishlistItems = await prisma.wishlistItem.findMany({

@@ -1,6 +1,6 @@
 import prisma from "../config/db.js";
 import catchAsync from "../utils/catchAsync.js";
-import AppError from "../utils/AppError.js";
+import AppError from "../utils/appError.js";
 import { verifyAccessToken } from "../utils/token.js";
 
 export const protect = catchAsync(async (req, res, next) => {
