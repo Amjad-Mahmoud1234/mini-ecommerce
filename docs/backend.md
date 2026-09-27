@@ -88,3 +88,35 @@ The user password is stored as a password hash in the database. During login, I 
 Protected routes require valid Access Token before the user can access cart, wishlist, and order operations.
 
 I used CORS to allow requests only from the frontend application.
+
+### API Endpoints
+
+Base URL: `https://mini-ecommerce-c2ad.onrender.com/api/v1`
+
+**Authentication**
+
+- `POST /auth/login`
+- `POST /auth/refresh`
+- `POST /auth/logout`
+
+**Products**
+
+- `GET /products`
+- `GET /products/:id`
+
+**Cart**
+
+- `GET /cart`
+- `POST /cart/items`
+- `PATCH /cart/items/:itemId`
+- `DELETE /cart/items/:itemId`
+
+**Wishlist**
+
+- `GET /wishlist`
+- `POST /wishlist/items`
+- `DELETE /wishlist/items/:productId`
+
+**Orders**
+
+- `POST /orders`
