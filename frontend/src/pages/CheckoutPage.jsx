@@ -29,6 +29,7 @@ function CheckoutPage() {
         const response = await api.get("/cart");
 
         setCart(response.data.data);
+        setError("");
       } catch (error) {
         console.error(
           "Failed to fetch cart:",
@@ -99,6 +100,43 @@ function CheckoutPage() {
 
         <main className="checkout-container">
           <LoadingSpinner message="Loading checkout..." />
+        </main>
+      </div>
+    );
+  }
+
+  if (error && cart.items.length === 0) {
+    return (
+      <div className="checkout-page">
+        <Helmet>
+          <title>NOVA | Checkout</title>
+        </Helmet>
+
+        <Navbar />
+
+        <main className="checkout-container">
+          <div className="checkout-heading">
+            <div>
+              <div className="checkout-label">
+                <span className="checkout-label-line"></span>
+                <span>CHECKOUT</span>
+              </div>
+
+              <h1>
+                Unable to load checkout
+                <span>.</span>
+              </h1>
+
+              <p>{error}</p>
+            </div>
+          </div>
+
+          <Link
+            to="/cart"
+            className="back-to-cart"
+          >
+            ← Back to cart
+          </Link>
         </main>
       </div>
     );

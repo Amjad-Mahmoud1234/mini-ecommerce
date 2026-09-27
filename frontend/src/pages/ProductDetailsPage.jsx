@@ -62,13 +62,10 @@ function ProductDetailsPage() {
           error
         );
 
-        if (error.response?.status === 404) {
-          setError("Product not found.");
-        } else {
-          setError(
+        setError(
+          error.response?.data?.message ||
             "Unable to load product. Please try again."
-          );
-        }
+        );
       } finally {
         setLoading(false);
       }

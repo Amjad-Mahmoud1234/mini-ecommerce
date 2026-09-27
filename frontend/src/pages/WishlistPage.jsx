@@ -36,6 +36,7 @@ function WishlistPage() {
           await api.get("/wishlist");
 
         setWishlistItems(response.data.data);
+        setError("");
       } catch (error) {
         console.error(
           "Failed to fetch wishlist:",

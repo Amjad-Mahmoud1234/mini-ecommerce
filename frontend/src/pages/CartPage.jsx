@@ -28,7 +28,8 @@ function CartPage() {
       console.error("Failed to fetch cart:", error);
 
       setError(
-        "Unable to load your cart. Please try again."
+        error.response?.data?.message ||
+          "Unable to load your cart. Please try again."
       );
     } finally {
       setLoading(false);
