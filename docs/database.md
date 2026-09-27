@@ -22,6 +22,10 @@ I used Prisma to work with PostgreSQL from the backend because it makes working 
 
 I also used the Prisma schema to define the models and relations, and migrations to manage database changes.
 
+### Neon
+
+I used Neon to host the PostgreSQL database in the cloud. This allows backend to connect to database using connection URL.
+
 ## Database Design
 
 I used models like User, Product, ProductVariant, Cart, CartItem, WishlistItem, Order, and OrderItem.
