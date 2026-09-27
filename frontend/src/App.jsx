@@ -1,6 +1,11 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import {
+  Navigate,
+  Route,
+  Routes,
+} from "react-router-dom";
 
 import ProtectedRoute from "./components/ProtectedRoute";
+import Footer from "./components/Footer";
 
 import LoginPage from "./pages/LoginPage";
 import ProductsPage from "./pages/ProductsPage";
@@ -12,65 +17,74 @@ import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 
 function App() {
   return (
-    <Routes>
-      {/* Public routes */}
-      <Route
-        path="/login"
-        element={<LoginPage />}
-      />
+    <>
+      <Routes>
+        {/* Public routes */}
+        <Route
+          path="/login"
+          element={<LoginPage />}
+        />
 
-      <Route
-        path="/products"
-        element={<ProductsPage />}
-      />
+        <Route
+          path="/products"
+          element={<ProductsPage />}
+        />
 
-      <Route
-        path="/products/:productId"
-        element={<ProductDetailsPage />}
-      />
+        <Route
+          path="/products/:productId"
+          element={<ProductDetailsPage />}
+        />
 
-      {/* Protected routes */}
-      <Route
-        path="/cart"
-        element={
-          <ProtectedRoute>
-            <CartPage />
-          </ProtectedRoute>
-        }
-      />
+        {/* Protected routes */}
+        <Route
+          path="/cart"
+          element={
+            <ProtectedRoute>
+              <CartPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/wishlist"
-        element={
-          <ProtectedRoute>
-            <WishlistPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/wishlist"
+          element={
+            <ProtectedRoute>
+              <WishlistPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/checkout"
-        element={
-          <ProtectedRoute>
-            <CheckoutPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <CheckoutPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/order-confirmation"
-        element={
-          <ProtectedRoute>
-            <OrderConfirmationPage />
-          </ProtectedRoute>
-        }
-      />
+        <Route
+          path="/order-confirmation"
+          element={
+            <ProtectedRoute>
+              <OrderConfirmationPage />
+            </ProtectedRoute>
+          }
+        />
 
-      <Route
-        path="/"
-        element={<Navigate to="/products" replace />}
-      />
-    </Routes>
+        <Route
+          path="/"
+          element={
+            <Navigate
+              to="/products"
+              replace
+            />
+          }
+        />
+      </Routes>
+
+      <Footer />
+    </>
   );
 }
 
